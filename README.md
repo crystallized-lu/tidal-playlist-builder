@@ -6,6 +6,76 @@ Designed to pair well with an LLM curator: the LLM picks tracks (with optional `
 
 > ⚠️ Uses the unofficial [`tidalapi`](https://github.com/tamland/python-tidal) library, which talks to Tidal's internal endpoints. Tidal doesn't publish a public developer API. Behaviour can change without warning if Tidal updates their backend, and use is technically against Tidal's Terms of Service (though `tidalapi` has been used widely for years without enforcement against individual users). At your own risk.
 
+## Quickstart (no coding experience needed)
+
+If you've never used a terminal before, here's the full path from "I have an idea for a playlist" to "the playlist is on my Tidal account" — roughly 15 minutes the first time.
+
+### 1. Install Python (one-time setup)
+
+This needs Python 3.10 or newer — a free programming language runtime.
+
+- **Mac**: download the installer from [python.org/downloads](https://www.python.org/downloads/) and run it.
+- **Windows**: download from [python.org/downloads](https://www.python.org/downloads/). **Tick "Add Python to PATH"** on the first installer screen.
+- **Already installed?** Open Terminal (Mac) / Command Prompt (Windows) and type `python3 --version`. If it shows `3.10` or higher, you're set.
+
+### 2. Download this code
+
+Click the green **Code** button at the top of this GitHub page → **Download ZIP**. Unzip it somewhere you'll remember (e.g. your Desktop).
+
+### 3. Open a terminal inside the folder
+
+- **Mac**: open Terminal, type `cd ` (with the trailing space), then drag the unzipped folder into the Terminal window — it'll auto-fill the path. Press enter.
+- **Windows**: open the unzipped folder in File Explorer, click the address bar, type `cmd`, press enter.
+
+### 4. Install the dependencies (one-time)
+
+In the terminal, type:
+
+```sh
+pip install -r requirements.txt
+```
+
+If that errors, try `pip3` instead of `pip`.
+
+### 5. Use an AI chat to write your playlist file
+
+Open [ChatGPT](https://chat.openai.com), [Claude](https://claude.ai), or [Mistral](https://chat.mistral.ai), and paste the prompt below — fill in the bracketed parts with your own details:
+
+> I want to build a Tidal playlist for **[describe the event — e.g. a 4-hour charity run, a wedding cocktail hour, a dinner party]**. The vibe should be **[describe — e.g. uplifting, family-friendly, mostly Afrobeats and global pop]**. Please give me **[number]** tracks, sequenced as a DJ set with a warmup → build → peak → cooldown energy curve.
+>
+> Only suggest tracks you're confident actually exist (real artists, real song titles). For each track give me: artist, title, energy (1–10), and vibe (one of: warmup, build, peak, sustain, cooldown).
+>
+> Output ONLY valid JSON, no commentary, in this exact format:
+> ```
+> {
+>   "name": "Playlist name here",
+>   "description": "Optional description",
+>   "tracks": [
+>     {"artist": "...", "title": "...", "energy": 5, "vibe": "warmup"}
+>   ]
+> }
+> ```
+
+Copy the JSON output. Open TextEdit (Mac) or Notepad (Windows), paste, and save it as `tracks.json` **inside the folder you unzipped**.
+
+> ⚠️ If the AI wraps the JSON in code-fence markers (` ```json ` and ` ``` `), copy **only the lines between** those markers — not the markers themselves.
+
+### 6. Build the playlist
+
+In the terminal, type:
+
+```sh
+python3 tidal_playlist.py tracks.json
+```
+
+The first time you run it, a Tidal URL will appear. Open it in your browser, log into Tidal, and approve. The script will continue automatically and create the playlist on your Tidal account.
+
+### Done
+
+Open Tidal — your playlist is in **My Collection → Playlists**. To make a different playlist later, repeat steps 5 and 6 only.
+
+---
+
 ## Install
 
 Requires **Python 3.10+** (uses PEP 604 `X | None` union syntax).
