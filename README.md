@@ -76,7 +76,17 @@ See [`seeds.example.json`](seeds.example.json).
 
 - **Track availability is regional.** A track found by search/ID may still throw an `S6001` playback error in your Tidal market. Worth spot-checking before a real event.
 - **Search is best-effort.** When pinning matters, prefer `track_id`. The bundled search heuristic prefers exact artist+title substring matches but falls back to the first result, which can grab karaoke/instrumental versions for ambiguous queries.
-- **No BPM data.** `tidalapi` doesn't expose BPM reliably. For DJ-style transitions, load the playlist into djay Pro / Serato / rekordbox — they analyze tempo, key and beatgrid authoritatively on import.
+- **No BPM data.** `tidalapi` doesn't expose BPM reliably. The optional `energy` and `vibe` fields are the intended substitute — assign them when curating the list and use them to hand-arrange the track order.
+
+## Going further: DJ-style transitions
+
+For real beatmatched / key-matched mixing rather than Tidal's basic crossfade, you'll need a DJ app. Notes:
+
+- **djay Pro, Serato DJ Pro, rekordbox** all integrate with Tidal but require Tidal's **DJ Extension** add-on, only available on certain Tidal tiers/regions. They analyze BPM, key and beatgrid automatically on import.
+- **VirtualDJ** is free, also integrates with Tidal via the same DJ Extension, and is the lowest-cost path if your Tidal tier supports it.
+- **Mixxx** is fully free and open source but does NOT support Tidal streaming directly — you'd need local copies of the tracks (iTunes / Bandcamp / Beatport).
+
+A natural next iteration of this project would be an exporter that emits a track list in a format another DJ app can ingest (e.g. M3U8, Rekordbox XML), so the playlist built here can flow into a real DJ environment.
 
 ## License
 
