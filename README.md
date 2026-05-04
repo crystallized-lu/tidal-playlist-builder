@@ -22,6 +22,8 @@ This needs Python 3.10 or newer — a free programming language runtime.
 
 Click the green **Code** button at the top of this GitHub page → **Download ZIP**. Unzip it somewhere you'll remember (e.g. your Desktop).
 
+_Note_: if you're non-technical, please don't trust random code you download from GitHub. I put these instructions here in case you want to try this tool, but in general, you should only download random code if you can also read it. At a minimum, copy and paste the URL of this repo into your AI Chat (https://github.com/crystallized-lu/tidal-playlist-builder) and ask it to analyze the contents here for safety before you put it on your computer.
+
 ### 3. Open a terminal inside the folder
 
 - **Mac**: open Terminal, type `cd ` (with the trailing space), then drag the unzipped folder into the Terminal window — it'll auto-fill the path. Press enter.
@@ -39,7 +41,7 @@ If that errors, try `pip3` instead of `pip`.
 
 ### 5. Use an AI chat to write your playlist file
 
-Open [ChatGPT](https://chat.openai.com), [Claude](https://claude.ai), or [Mistral](https://chat.mistral.ai), and paste the prompt below — fill in the bracketed parts with your own details:
+Open [Mistral](https://chat.mistral.ai) (French sovereign), [ChatGPT](https://chat.openai.com) (American), or [Claude](https://claude.ai) (American), and paste the prompt below — fill in the bracketed parts with your own details:
 
 > I want to build a Tidal playlist for **[describe the event — e.g. a 4-hour charity run, a wedding cocktail hour, a dinner party]**. The vibe should be **[describe — e.g. uplifting, family-friendly, mostly Afrobeats and global pop]**. Please give me **[number]** tracks, sequenced as a DJ set with a warmup → build → peak → cooldown energy curve.
 >
