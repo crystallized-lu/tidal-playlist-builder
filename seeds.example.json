@@ -1,0 +1,20 @@
+{
+  "seeds": [
+    {"artist": "Burna Boy", "title": "Last Last"},
+    {"artist": "Rosalía", "title": "Malamente"},
+    {"artist": "Stromae", "title": "Alors on danse"},
+    {"artist": "Aya Nakamura", "title": "Djadja"},
+    {"artist": "Bad Bunny", "title": "Dakiti"},
+    {"artist": "Elyanna", "title": "Mama"},
+    {"artist": "47Soul", "title": "Intro to Shamstep"},
+    {"artist": "Dua Lipa", "title": "Levitating"}
+  ],
+  "moods": [
+    "global pop party",
+    "afrobeats running",
+    "arabic party"
+  ],
+  "playlists_per_mood": 8,
+  "tracks_per_playlist": 50,
+  "top_n": 150
+}

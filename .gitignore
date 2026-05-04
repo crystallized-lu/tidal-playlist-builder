@@ -1,0 +1,23 @@
+# Tidal OAuth session cache
+.tidal_session.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# Tooling
+.claude/
+.remember/
+
+# Personal playlist specs (keep examples only)
+freedom_peace*.json
+*.local.json

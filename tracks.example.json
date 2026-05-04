@@ -1,0 +1,11 @@
+{
+  "name": "Example Party Playlist",
+  "description": "Sample format — track order is preserved exactly.",
+  "tracks": [
+    { "artist": "Stromae", "title": "Alors on danse", "energy": 5, "vibe": "warmup" },
+    { "artist": "Dua Lipa", "title": "Levitating", "energy": 7, "vibe": "build" },
+    { "track_id": 228364626, "artist": "Burna Boy", "title": "Last Last", "energy": 8, "vibe": "peak" },
+    { "track_id": 160041283, "artist": "Bad Bunny", "title": "DÁKITI", "energy": 7, "vibe": "peak" },
+    { "artist": "Adele", "title": "Hello", "energy": 3, "vibe": "cooldown" }
+  ]
+}
