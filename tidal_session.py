@@ -2,14 +2,19 @@
 
 Caches the OAuth session to disk so repeated runs don't re-prompt.
 
-Default location: $XDG_CONFIG_HOME/tidal-playlist-builder/session.json
-                  (or ~/.config/tidal-playlist-builder/session.json)
-Override with: TIDAL_PLAYLIST_BUILDER_SESSION=/path/to/session.json
+Default location: $XDG_CONFIG_HOME/llm-playlist-builder/session.json
+                  (or ~/.config/llm-playlist-builder/session.json)
+Override with: LLM_PLAYLIST_BUILDER_SESSION=/path/to/session.json
 
-For backwards compatibility, a legacy `.tidal_session.json` in the current
-working directory is read if present, but new sessions are always written
-to the resolved location above. The file is created with 0600 permissions
-so other users on the machine can't read your refresh token.
+For backwards compatibility, the script also reads (in order):
+  1. The path given by LLM_PLAYLIST_BUILDER_SESSION (override)
+  2. The default ~/.config/llm-playlist-builder/session.json
+  3. The previous default ~/.config/tidal-playlist-builder/session.json
+  4. A legacy `.tidal_session.json` in the current working directory
+
+New sessions are always WRITTEN to the resolved primary location above.
+The file is created with 0600 permissions so other users on the machine
+can't read your refresh token.
 """
 
 import json
@@ -21,15 +26,23 @@ from pathlib import Path
 
 import tidalapi
 
-LEGACY_SESSION_FILE = Path(".tidal_session.json")
+LEGACY_CWD_FILE = Path(".tidal_session.json")
+
+
+def _config_root() -> Path:
+    base = os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")
+    return Path(base)
 
 
 def _session_path() -> Path:
-    override = os.environ.get("TIDAL_PLAYLIST_BUILDER_SESSION")
+    override = os.environ.get("LLM_PLAYLIST_BUILDER_SESSION")
     if override:
         return Path(override).expanduser()
-    base = os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")
-    return Path(base) / "tidal-playlist-builder" / "session.json"
+    return _config_root() / "llm-playlist-builder" / "session.json"
+
+
+def _legacy_xdg_path() -> Path:
+    return _config_root() / "tidal-playlist-builder" / "session.json"
 
 
 def _save(session: tidalapi.Session):
@@ -73,11 +86,10 @@ def _load_from(session: tidalapi.Session, path: Path) -> bool:
 
 
 def _load(session: tidalapi.Session) -> bool:
-    if _load_from(session, _session_path()):
-        return True
-    # Backwards compat: pick up an old cwd-relative session file if it exists.
-    if _load_from(session, LEGACY_SESSION_FILE):
-        return True
+    # Try new primary location, then earlier locations from previous versions.
+    for path in (_session_path(), _legacy_xdg_path(), LEGACY_CWD_FILE):
+        if _load_from(session, path):
+            return True
     return False
 
 

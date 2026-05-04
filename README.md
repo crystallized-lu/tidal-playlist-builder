@@ -1,10 +1,12 @@
-# tidal-playlist-builder
+# llm-playlist-builder
 
 Build curated Tidal playlists from a JSON track list, and expand a small set of seed tracks into a ranked candidate pool using Tidal's track radio + public playlist co-occurrence.
 
 Designed to pair well with an LLM curator: the LLM picks tracks (with optional `energy` / `vibe` metadata for DJ-style sequencing), and these scripts handle the Tidal API plumbing.
 
-> ⚠️ Uses the unofficial [`tidalapi`](https://github.com/tamland/python-tidal) library, which talks to Tidal's internal endpoints. Tidal doesn't publish a public developer API. Behaviour can change without warning if Tidal updates their backend, and use is technically against Tidal's Terms of Service (though `tidalapi` has been used widely for years without enforcement against individual users). At your own risk.
+> ⚠️ **Personal / research project — not a product or service.** This repository is published as a learning artefact and a tool for personal playlist creation. It is **not** a commercial offering, **not** a service operated by anyone, and **not** affiliated with, endorsed by, or connected to Tidal in any way. "Tidal" is a trademark of its respective owner; it is referenced here only descriptively, to indicate which streaming platform the code currently targets.
+>
+> Uses the unofficial [`tidalapi`](https://github.com/tamland/python-tidal) library, which talks to Tidal's internal endpoints. Tidal doesn't publish a public developer API, so behaviour can change without warning if Tidal updates their backend, and use is technically against Tidal's Terms of Service (though `tidalapi` has been used widely for years without enforcement against individual users). At your own risk.
 
 ## Quickstart (no coding experience needed)
 
@@ -91,11 +93,11 @@ pip install -r requirements.txt
 All scripts share an OAuth session cached at:
 
 ```
-$XDG_CONFIG_HOME/tidal-playlist-builder/session.json
-(or ~/.config/tidal-playlist-builder/session.json)
+$XDG_CONFIG_HOME/llm-playlist-builder/session.json
+(or ~/.config/llm-playlist-builder/session.json)
 ```
 
-Override the location with `TIDAL_PLAYLIST_BUILDER_SESSION=/path/to/session.json`. The file is created with `0600` permissions so other users on the machine can't read your refresh token.
+Override the location with `LLM_PLAYLIST_BUILDER_SESSION=/path/to/session.json`. The file is created with `0600` permissions so other users on the machine can't read your refresh token.
 
 On first run, you'll get a URL to open in your browser to approve the device-flow login. After that, subsequent runs are silent until the session expires.
 
