@@ -132,6 +132,7 @@ The `expand_seeds.py` workflow is an alternative to step 1 when you don't have s
 - **Track availability is regional.** A track found by search/ID may still throw an `S6001` playback error in your Tidal market. Worth spot-checking before a real event.
 - **Search is best-effort.** When pinning matters, prefer `track_id`. The bundled search heuristic prefers exact artist+title substring matches but falls back to the first result, which can grab karaoke/instrumental versions for ambiguous queries.
 - **No BPM data.** `tidalapi` doesn't expose BPM reliably. The optional `energy` and `vibe` fields are the intended substitute — assign them when curating the list and use them to hand-arrange the track order.
+- **What the LLM actually knows.** When an LLM assigns `energy` and `vibe`, it's drawing on *textual* knowledge of the songs from its training data (reviews, articles, descriptions) — not audio analysis. This works well for mainstream tracks anyone on the internet has written about, but is unreliable for niche / non-English catalog, deep cuts, or releases past the model's training cutoff. Spot-check the curation for tracks the LLM might not actually know, and treat the exact `energy` number as directional rather than precise.
 
 ## Going further: DJ-style transitions
 
