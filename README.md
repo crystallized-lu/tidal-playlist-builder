@@ -6,13 +6,24 @@ Designed to pair well with an LLM curator: the LLM picks tracks (with optional `
 
 ## Install
 
+Requires **Python 3.10+** (uses PEP 604 `X | None` union syntax).
+
 ```sh
 pip install -r requirements.txt
 ```
 
 ## Authenticate
 
-Both scripts share an OAuth session cached in `.tidal_session.json` (gitignored). On first run you'll get a URL to open in your browser to approve. After that, subsequent runs are silent.
+All scripts share an OAuth session cached at:
+
+```
+$XDG_CONFIG_HOME/tidal-playlist-builder/session.json
+(or ~/.config/tidal-playlist-builder/session.json)
+```
+
+Override the location with `TIDAL_PLAYLIST_BUILDER_SESSION=/path/to/session.json`. The file is created with `0600` permissions so other users on the machine can't read your refresh token.
+
+On first run, you'll get a URL to open in your browser to approve the device-flow login. After that, subsequent runs are silent until the session expires.
 
 ## Build a playlist
 
@@ -36,10 +47,15 @@ python tidal_playlist.py tracks.json
 Each track needs EITHER `track_id` (pins the exact Tidal track — recommended) OR both `artist` and `title` (script searches Tidal and picks the best match). `energy` / `vibe` are optional metadata for your own curation; the script preserves track order exactly.
 
 The script:
-- creates a fresh playlist on your account
+- creates a **fresh, private playlist on your authenticated Tidal account** (visible in your Tidal app under "My Collection → Playlists")
 - resolves each track (ID lookup or search)
 - adds in batches of 20, refreshing the playlist's etag between batches (Tidal's API uses an `If-Match` header that advances after every successful add — without refreshing, batches 3+ fail with `412 Precondition Failed`)
 - reports tracks actually added vs found vs not-found
+
+In the per-track output:
+- ✅ — track found via exact ID lookup, or search returned a strict artist+title match
+- ⚠️ — search fell back to the first result because no strict match existed (worth verifying — see "Notes & caveats")
+- ❌ — track could not be found
 
 See [`tracks.example.json`](tracks.example.json).
 
@@ -85,6 +101,29 @@ Combines two signals:
 Output is a ranked candidate pool (`score = radio_count + 1.5 × playlist_count`) you can hand-curate (or feed to an LLM) and turn into a `tracks.json` for the playlist builder.
 
 See [`seeds.example.json`](seeds.example.json).
+
+## End-to-end example
+
+A typical run looks like this:
+
+```sh
+# 1. Pool tracks from playlists you trust as source material for the theme.
+python fetch_playlists.py \
+  https://tidal.com/playlist/aaaaaaaa-1111-2222-3333-444444444444 \
+  https://tidal.com/playlist/bbbbbbbb-5555-6666-7777-888888888888 \
+  -o candidates.json
+
+# 2. Hand-curate (or paste candidates.json into an LLM and ask it to pick
+#    ~80 tracks, assign each an `energy` 1–10 and a `vibe` like
+#    warmup/build/peak/cooldown, and order them as a DJ set).
+#    Save the result as tracks.json — pin tracks by `track_id` to avoid
+#    search ambiguity.
+
+# 3. Build the Tidal playlist from your curated list.
+python tidal_playlist.py tracks.json
+```
+
+The `expand_seeds.py` workflow is an alternative to step 1 when you don't have specific source playlists in mind — give it a few seed tracks and mood keywords, and it builds the candidate pool from Tidal's recommendation engine instead.
 
 ## Notes & caveats
 
