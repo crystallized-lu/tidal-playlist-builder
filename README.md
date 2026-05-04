@@ -24,7 +24,7 @@ This needs Python 3.10 or newer — a free programming language runtime.
 
 Click the green **Code** button at the top of this GitHub page → **Download ZIP**. Unzip it somewhere you'll remember (e.g. your Desktop).
 
-_Note_: if you're non-technical, please don't trust random code you download from GitHub. I put these instructions here in case you want to try this tool, but in general, you should only download random code if you can also read it. At a minimum, copy and paste the URL of this repo into your AI Chat (https://github.com/crystallized-lu/tidal-playlist-builder) and ask it to analyze the contents here for safety before you put it on your computer.
+_Note_: if you're non-technical, please don't trust random code you download from GitHub. I put these instructions here in case you want to try this tool, but in general, you should only download random code if you can also read it. At a minimum, copy and paste the URL of this repo into your AI Chat (https://github.com/crystallized-lu/llm-playlist-builder) and ask it to analyze the contents here for safety before you put it on your computer.
 
 ### 3. Open a terminal inside the folder
 
