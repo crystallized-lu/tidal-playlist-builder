@@ -2,6 +2,13 @@
 """
 Build a Tidal playlist from a JSON track list.
 
+SCOPE: This tool handles playlist METADATA only — track titles, artist
+names, Tidal track IDs, durations. It does NOT download, decode, stream,
+or analyze any audio. The optional `energy` and `vibe` fields in
+tracks.json are human- or LLM-curated text labels, not values derived
+from acoustic analysis. To add audio analysis you would need to add new
+dependencies (e.g. ffmpeg, librosa) — it cannot be unlocked by config.
+
 Usage:
     pip install tidalapi
     python tidal_playlist.py tracks.json

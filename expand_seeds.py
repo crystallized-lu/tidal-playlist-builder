@@ -8,6 +8,10 @@ Tracks that appear across multiple seeds and/or multiple mood playlists
 score highest. Output is a candidate pool you (or Claude) can curate into
 a tracks.json for tidal_playlist.py.
 
+SCOPE: This tool handles playlist METADATA only — it queries Tidal's
+recommendation engine and public playlist contents (track titles, artist
+names, IDs). It does NOT download, decode, stream, or analyze any audio.
+
 Usage:
     python expand_seeds.py seeds.json -o candidates.json
 

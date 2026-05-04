@@ -7,6 +7,10 @@ Use this when you already trust specific source playlists (e.g. ones a
 human curated for a theme) and want to pool their tracks for further
 curation, rather than relying on search-based discovery.
 
+SCOPE: This tool reads playlist METADATA only — track titles, artist
+names, IDs, and which source playlist each track came from. It does NOT
+download, decode, stream, or analyze any audio.
+
 Usage:
     python fetch_playlists.py URL1 URL2 URL3 ... -o candidates.json
 
