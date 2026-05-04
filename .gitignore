@@ -1,6 +1,9 @@
 # Tidal OAuth session cache
 .tidal_session.json
 
+# Local secrets / API keys
+.env
+
 # Python
 __pycache__/
 *.py[cod]

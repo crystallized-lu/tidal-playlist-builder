@@ -76,7 +76,7 @@ See [`seeds.example.json`](seeds.example.json).
 
 - **Track availability is regional.** A track found by search/ID may still throw an `S6001` playback error in your Tidal market. Worth spot-checking before a real event.
 - **Search is best-effort.** When pinning matters, prefer `track_id`. The bundled search heuristic prefers exact artist+title substring matches but falls back to the first result, which can grab karaoke/instrumental versions for ambiguous queries.
-- **No BPM data.** `tidalapi` doesn't expose BPM reliably. If you want tempo metadata for DJ-style pre-sequencing, populate it from a third-party source (e.g. [getsongbpm.com](https://getsongbpm.com)) or let djay Pro / Serato analyze on import.
+- **No BPM data.** `tidalapi` doesn't expose BPM reliably. For DJ-style transitions, load the playlist into djay Pro / Serato / rekordbox — they analyze tempo, key and beatgrid authoritatively on import.
 
 ## License
 
