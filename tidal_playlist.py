@@ -35,27 +35,38 @@ import tidalapi
 from tidal_session import get_session
 
 
+MAX_SPEC_BYTES = 10_000_000  # 10 MB hard cap — guards against accidental huge inputs
+
+
 def find_track(session: tidalapi.Session, artist: str, title: str):
-    """Search Tidal for a track. Returns track object or None."""
+    """Search Tidal for a track. Returns (track, exact_match: bool) or (None, False).
+
+    `exact_match=False` means we fell back to the first search result because
+    no result strictly matched both artist and title — caller should surface
+    this so the user can spot mis-pinnings without verifying after the fact.
+    """
     query = f"{artist} {title}"
     try:
         results = session.search(query, models=[tidalapi.Track], limit=5)
         tracks = results.get("tracks", [])
         if not tracks:
-            return None
+            return None, False
         artist_lower = artist.lower()
         title_lower = title.lower()
         for track in tracks:
             track_artists = [a.name.lower() for a in track.artists]
             if any(artist_lower in a for a in track_artists) and title_lower in track.name.lower():
-                return track
-        return tracks[0]
+                return track, True
+        return tracks[0], False
     except Exception as e:
         print(f"    ⚠️  Search error for '{query}': {e}")
-        return None
+        return None, False
 
 
 def load_spec(path: Path) -> dict:
+    size = path.stat().st_size
+    if size > MAX_SPEC_BYTES:
+        raise SystemExit(f"{path}: {size} bytes exceeds {MAX_SPEC_BYTES}-byte cap")
     spec = json.loads(path.read_text())
     if not spec.get("name") or not isinstance(spec.get("tracks"), list):
         raise ValueError(f"{path}: must have 'name' (str) and 'tracks' (list)")
@@ -92,18 +103,20 @@ def main():
         label = f"{artist} — {title}" if artist or title else f"id:{t.get('track_id')}"
         print(f"  [{i:02d}/{len(tracks_in)}] {label} ... ", end="", flush=True)
         track = None
+        exact = True  # ID lookups are always exact; only search can fall back.
         if t.get("track_id"):
             try:
                 track = session.track(t["track_id"])
             except Exception as e:
                 print(f"❌  id lookup failed: {e}")
         else:
-            track = find_track(session, artist, title)
+            track, exact = find_track(session, artist, title)
         if track:
             found_ids.append(track.id)
             duration = f"{track.duration // 60}:{track.duration % 60:02d}"
             actual = f"{track.artists[0].name} — {track.name}" if track.artists else track.name
-            print(f"✅  ({duration})  {actual}")
+            marker = "✅" if exact else "⚠️ "  # ⚠️  = fell back to first search result
+            print(f"{marker}  ({duration})  {actual}")
         else:
             not_found.append((artist, title))
             if not t.get("track_id"):

@@ -43,17 +43,34 @@ from pathlib import Path
 
 from tidal_session import get_session
 
-PLAYLIST_ID_RE = re.compile(
-    r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+UUID_RE = re.compile(
+    r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+    re.IGNORECASE,
+)
+TIDAL_PLAYLIST_URL_RE = re.compile(
+    r"https?://(?:[\w.-]+\.)?tidal\.com/(?:browse/)?playlist/("
+    + UUID_RE.pattern + r")/?$",
     re.IGNORECASE,
 )
 
 
 def parse_playlist_id(arg: str) -> str:
-    m = PLAYLIST_ID_RE.search(arg)
-    if not m:
-        raise ValueError(f"Could not extract a Tidal playlist UUID from: {arg!r}")
-    return m.group(1)
+    """Extract a Tidal playlist UUID from a URL or accept a bare UUID.
+
+    Strict: rejects strings that aren't a recognised Tidal playlist URL or a
+    bare UUID. This avoids accidentally picking a UUID out of unrelated text.
+    """
+    arg = arg.strip()
+    if UUID_RE.fullmatch(arg):
+        return arg.lower()
+    m = TIDAL_PLAYLIST_URL_RE.match(arg)
+    if m:
+        return m.group(1).lower()
+    raise ValueError(
+        f"Not a Tidal playlist URL or UUID: {arg!r}. "
+        "Expected https://tidal.com/playlist/<uuid>, "
+        "https://tidal.com/browse/playlist/<uuid>, or a bare UUID."
+    )
 
 
 def main():

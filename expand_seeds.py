@@ -33,22 +33,26 @@ from pathlib import Path
 import tidalapi
 from tidal_session import get_session
 
+MAX_SPEC_BYTES = 10_000_000  # 10 MB hard cap
+
 
 def find_track(session, artist: str, title: str):
+    """Returns (track, exact_match) or (None, False) — exact_match=False means
+    we fell back to the first result because no strict match existed."""
     query = f"{artist} {title}"
     try:
         results = session.search(query, models=[tidalapi.Track], limit=5)
         tracks = results.get("tracks", [])
         if not tracks:
-            return None
+            return None, False
         a_lower, t_lower = artist.lower(), title.lower()
         for tr in tracks:
             if any(a_lower in a.name.lower() for a in tr.artists) and t_lower in tr.name.lower():
-                return tr
-        return tracks[0]
+                return tr, True
+        return tracks[0], False
     except Exception as e:
         print(f"    ⚠️  Search error '{query}': {e}")
-        return None
+        return None, False
 
 
 def search_playlists(session, query: str, limit: int):
@@ -77,6 +81,9 @@ def main():
     parser.add_argument("-o", "--output", type=Path, default=Path("candidates.json"))
     args = parser.parse_args()
 
+    size = args.seeds.stat().st_size
+    if size > MAX_SPEC_BYTES:
+        raise SystemExit(f"{args.seeds}: {size} bytes exceeds {MAX_SPEC_BYTES}-byte cap")
     spec = json.loads(args.seeds.read_text())
     seeds = spec.get("seeds", [])
     moods = spec.get("moods", [])
@@ -104,10 +111,13 @@ def main():
     for i, s in enumerate(seeds, 1):
         artist, title = s["artist"], s["title"]
         print(f"  [{i}/{len(seeds)}] {artist} — {title}")
-        seed_track = find_track(session, artist, title)
+        seed_track, exact = find_track(session, artist, title)
         if not seed_track:
             print(f"      ⚠️  seed not found on Tidal, skipping")
             continue
+        if not exact:
+            got = seed_track.artists[0].name if seed_track.artists else "?"
+            print(f"      ⚠️  no strict match, using first result: {got} — {seed_track.name}")
         seed_keys.add(track_key(seed_track))
         try:
             radio = seed_track.get_track_radio()
