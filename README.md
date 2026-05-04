@@ -43,6 +43,20 @@ The script:
 
 See [`tracks.example.json`](tracks.example.json).
 
+## Pool tracks from known playlists
+
+```sh
+python fetch_playlists.py URL1 URL2 URL3 ... -o candidates.json
+```
+
+Use this when you already trust specific source playlists for a theme (e.g. someone else's well-curated mood/genre playlists) and want to pool their tracks for further curation, rather than relying on search-based discovery.
+
+URLs can be `https://tidal.com/playlist/<uuid>`, `https://tidal.com/browse/playlist/<uuid>`, or bare UUIDs. Any number of playlists is supported.
+
+Output is a deduped pool sorted by `source_count` descending — tracks appearing in multiple source playlists float to the top, which is a strong signal they belong in your final set. Each candidate has `track_id`, `artist`, `title`, the list of `sources` it came from, and `source_count`.
+
+Typical follow-up: hand-curate (or hand to an LLM) → produce a `tracks.json` for the playlist builder, pinning the chosen tracks by `track_id`.
+
 ## Expand seeds into candidates
 
 ```sh
