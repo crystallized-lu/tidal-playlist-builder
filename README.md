@@ -4,6 +4,8 @@ Build curated Tidal playlists from a JSON track list, and expand a small set of 
 
 Designed to pair well with an LLM curator: the LLM picks tracks (with optional `energy` / `vibe` metadata for DJ-style sequencing), and these scripts handle the Tidal API plumbing.
 
+> ⚠️ Uses the unofficial [`tidalapi`](https://github.com/tamland/python-tidal) library, which talks to Tidal's internal endpoints. Tidal doesn't publish a public developer API. Behaviour can change without warning if Tidal updates their backend, and use is technically against Tidal's Terms of Service (though `tidalapi` has been used widely for years without enforcement against individual users). At your own risk.
+
 ## Install
 
 Requires **Python 3.10+** (uses PEP 604 `X | None` union syntax).
